@@ -14,15 +14,20 @@ body {
   overflow: hidden;
 }
 
+body {
+  position: relative;
+}
+
 .browser-container {
-  display: flex;
-  flex-direction: column;
+  position: relative;
   width: 100%;
   height: 100%;
   background: #fff;
 }
 
 .toolbar {
+  position: relative;
+  z-index: 3;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -30,7 +35,7 @@ body {
   background: linear-gradient(to bottom, #2d2e31, #202124);
   border-bottom: 1px solid #000;
   height: 56px;
-  flex: 0 0 56px;
+  width: 100%;
 }
 
 .nav-buttons,
@@ -121,15 +126,10 @@ body {
   font-size: 18px;
   cursor: pointer;
   flex-shrink: 0;
-  transition: color 0.2s ease;
-}
-
-.clear-button:hover {
-  color: #e8eaed;
 }
 
 .loading-bar {
-  position: fixed;
+  position: absolute;
   top: 56px;
   left: 0;
   height: 3px;
@@ -146,11 +146,17 @@ body {
 }
 
 #browserView {
-  flex: 1 1 auto;
+  position: absolute;
+  top: 56px;
+  left: 0;
+  right: 0;
+  bottom: 0;
   width: 100%;
-  min-height: 0;
-  border: none;
+  height: calc(100% - 56px);
   display: block;
+  border: none;
+  background: #fff;
+  z-index: 1;
 }
 
 .account-panel {
@@ -196,9 +202,4 @@ body {
   font-weight: 600;
   cursor: pointer;
   font-size: 14px;
-  transition: background 0.2s ease;
-}
-
-.panel-action:hover {
-  background: #1765cc;
 }

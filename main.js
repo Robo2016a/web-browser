@@ -23,8 +23,7 @@ function createWindow() {
 
   mainWindow.loadFile(path.join(__dirname, "index.html"));
   mainWindow.setMenuBarVisibility(false);
-
-  mainWindow.once("ready-to-show", () => mainWindow.show());
+  mainWindow.on("ready-to-show", () => mainWindow.show());
   mainWindow.on("closed", () => {
     mainWindow = null;
   });
