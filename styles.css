@@ -30,7 +30,7 @@ body {
   background: linear-gradient(to bottom, #2d2e31, #202124);
   border-bottom: 1px solid #000;
   height: 56px;
-  flex-shrink: 0;
+  flex: 0 0 56px;
 }
 
 .nav-buttons,
@@ -129,7 +129,7 @@ body {
 }
 
 .loading-bar {
-  position: absolute;
+  position: fixed;
   top: 56px;
   left: 0;
   height: 3px;
@@ -137,7 +137,7 @@ body {
   background: linear-gradient(90deg, #4285f4, #34a853, #fbbc04, #ea4335);
   opacity: 0;
   transition: width 0.3s ease, opacity 0.3s ease;
-  z-index: 99;
+  z-index: 999;
 }
 
 .loading-bar.active {
@@ -146,9 +146,11 @@ body {
 }
 
 #browserView {
-  flex: 1;
+  flex: 1 1 auto;
   width: 100%;
+  min-height: 0;
   border: none;
+  display: block;
 }
 
 .account-panel {
