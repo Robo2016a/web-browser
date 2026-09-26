@@ -16,9 +16,7 @@ const addAccountBtn = document.getElementById("addAccountBtn");
 let history = [DEFAULT_URL];
 let currentIndex = 0;
 let currentUrl = DEFAULT_URL;
-let accounts = [
-  { email: "user@gmail.com", name: "User", initial: "U" },
-];
+let accounts = [{ email: "user@gmail.com", name: "User", initial: "U" }];
 let currentAccount = accounts[0];
 let loadingTimeout;
 
@@ -46,8 +44,13 @@ function updateSecurityIcon(url) {
 }
 
 function updateNavButtons() {
-  backBtn.disabled = currentIndex <= 0;
-  forwardBtn.disabled = currentIndex >= history.length - 1;
+  try {
+    backBtn.disabled = !browserView.canGoBack();
+    forwardBtn.disabled = !browserView.canGoForward();
+  } catch {
+    backBtn.disabled = true;
+    forwardBtn.disabled = true;
+  }
 }
 
 function showLoadingBar() {
@@ -84,10 +87,10 @@ function navigateTo(url, addToHistory = true) {
       currentIndex = history.length - 1;
     }
   }
-  updateNavButtons();
 
+  updateNavButtons();
   showLoadingBar();
-  browserView.src = validUrl;
+  browserView.loadURL(validUrl);
 }
 
 function renderAccounts() {
@@ -127,7 +130,6 @@ function renderAccounts() {
       currentAccount = account;
       renderAccounts();
       accountBtn.style.opacity = "1";
-      // Could load account-specific data here
     });
 
     accountList.appendChild(item);
@@ -143,36 +145,21 @@ function toggleAccountPanel() {
   }
 }
 
-// Navigation handlers
 backBtn.addEventListener("click", () => {
-  if (currentIndex > 0) {
-    currentIndex--;
-    const url = history[currentIndex];
-    currentUrl = url;
-    addressBar.value = url;
-    updateSecurityIcon(url);
-    updateNavButtons();
-    showLoadingBar();
-    browserView.src = url;
+  if (browserView.canGoBack()) {
+    browserView.goBack();
   }
 });
 
 forwardBtn.addEventListener("click", () => {
-  if (currentIndex < history.length - 1) {
-    currentIndex++;
-    const url = history[currentIndex];
-    currentUrl = url;
-    addressBar.value = url;
-    updateSecurityIcon(url);
-    updateNavButtons();
-    showLoadingBar();
-    browserView.src = url;
+  if (browserView.canGoForward()) {
+    browserView.goForward();
   }
 });
 
 reloadBtn.addEventListener("click", () => {
   showLoadingBar();
-  browserView.src = currentUrl;
+  browserView.reload();
 });
 
 accountBtn.addEventListener("click", toggleAccountPanel);
@@ -195,7 +182,6 @@ addAccountBtn.addEventListener("click", () => {
   }
 });
 
-// Address bar
 addressBar.addEventListener("keydown", (event) => {
   if (event.key === "Enter") {
     navigateTo(addressBar.value, true);
@@ -207,26 +193,51 @@ addressBar.addEventListener("focus", () => {
   addressBar.select();
 });
 
-// Close account panel when clicking outside
 document.addEventListener("click", (event) => {
-  if (
-    !accountPanel.contains(event.target) &&
-    !accountBtn.contains(event.target)
-  ) {
+  if (!accountPanel.contains(event.target) && !accountBtn.contains(event.target)) {
     accountPanel.classList.add("hidden");
   }
 });
 
-// iframe load events
-browserView.addEventListener("load", () => {
-  hideLoadingBar();
+browserView.addEventListener("did-start-loading", () => {
+  showLoadingBar();
+  updateNavButtons();
 });
 
-browserView.addEventListener("error", () => {
+browserView.addEventListener("did-stop-loading", () => {
   hideLoadingBar();
+  updateNavButtons();
+
+  try {
+    const url = browserView.getURL();
+    if (url && url !== "about:blank") {
+      currentUrl = url;
+      addressBar.value = url;
+      updateSecurityIcon(url);
+    }
+  } catch (error) {
+    console.error("Error getting URL:", error);
+  }
 });
 
-// Keyboard shortcuts
+browserView.addEventListener("did-fail-load", () => {
+  hideLoadingBar();
+  updateNavButtons();
+});
+
+browserView.addEventListener("did-navigate", () => {
+  try {
+    const url = browserView.getURL();
+    if (url && url !== "about:blank") {
+      currentUrl = url;
+      addressBar.value = url;
+      updateSecurityIcon(url);
+    }
+  } catch (error) {
+    console.error("Error in did-navigate:", error);
+  }
+});
+
 document.addEventListener("keydown", (event) => {
   if (event.ctrlKey || event.metaKey) {
     if (event.key === "r") {
@@ -248,13 +259,10 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
-// Initial setup
 updateSecurityIcon(DEFAULT_URL);
 addressBar.value = DEFAULT_URL;
 updateNavButtons();
 renderAccounts();
-
-// Load Google on startup
 navigateTo(DEFAULT_URL, false);
 
 console.log("Browser ready");
