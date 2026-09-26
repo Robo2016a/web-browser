@@ -14,7 +14,6 @@ function createWindow() {
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       contextIsolation: true,
-      enableRemoteModule: false,
       nodeIntegration: false,
       sandbox: true,
       webviewTag: true,
@@ -24,7 +23,12 @@ function createWindow() {
 
   mainWindow.loadFile(path.join(__dirname, "index.html"));
   mainWindow.setMenuBarVisibility(false);
-  mainWindow.on("ready-to-show", () => mainWindow.show());
+
+  mainWindow.on("ready-to-show", () => {
+    mainWindow.maximize();
+    mainWindow.show();
+  });
+
   mainWindow.on("closed", () => {
     mainWindow = null;
   });
