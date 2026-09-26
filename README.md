@@ -35,6 +35,7 @@ The browser window will open and start at Google.com.
 - Supports both URLs and search queries
 - HTTPS/HTTP security lock indicator
 - Responsive design
+- Full page rendering
 
 ## Usage
 
@@ -52,6 +53,3 @@ The browser window will open and start at Google.com.
 **Blank window:**
 - Make sure you're in the correct directory
 - Check that `index.html` exists in the same folder as `main.js`
-
-**"Webview not available" error:**
-- This is a known Electron issue. Update Electron: `npm install electron@latest`

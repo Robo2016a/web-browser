@@ -4,8 +4,7 @@
   "description": "A Chrome-like browser built with Electron",
   "main": "main.js",
   "scripts": {
-    "start": "electron .",
-    "dev": "electron . --remote-debugging-port=9222"
+    "start": "electron ."
   },
   "keywords": [
     "browser",

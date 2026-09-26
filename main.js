@@ -1,7 +1,8 @@
-const { app, BrowserWindow, Menu } = require("electron");
+const { app, BrowserWindow } = require("electron");
 const path = require("path");
 
 let mainWindow;
+let browserWindow;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -9,26 +10,19 @@ function createWindow() {
     height: 900,
     minWidth: 800,
     minHeight: 600,
-    show: false,
-    icon: path.join(__dirname, "icon.png"),
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
-      webviewTag: true,
-      contextIsolation: false,
-      enableRemoteModule: true,
+      contextIsolation: true,
       nodeIntegration: false,
-      sandbox: false,
+      sandbox: true,
     },
   });
 
   mainWindow.loadFile("index.html");
-  mainWindow.setMenuBarVisibility(false);
-  mainWindow.webContents.on("ready-to-show", () => {
-    mainWindow.show();
-  });
+  mainWindow.webContents.openDevTools({ mode: "detach" });
 
-  mainWindow.webContents.on("did-fail-load", (event, errorCode, errorDescription) => {
-    console.error("Main window failed to load:", errorDescription);
+  mainWindow.on("closed", () => {
+    mainWindow = null;
   });
 }
 

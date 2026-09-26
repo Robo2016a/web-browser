@@ -139,11 +139,12 @@ body {
   opacity: 1;
 }
 
-#browserView {
+#browserFrame {
   width: 100%;
   height: 100%;
   border: none;
   flex: 1;
+  background: white;
 }
 
 /* Responsive */
