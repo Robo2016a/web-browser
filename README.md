@@ -1,40 +1,33 @@
-# Working Browser for GitHub Pages
+# Real Browser
 
-This project is a browser-style app built with plain HTML, CSS, and JavaScript so it can be hosted on GitHub Pages.
+This is a real browser-style app built with Electron, not a static GitHub Pages page.
+
+Why this is different
+- GitHub Pages is static-only and cannot host a real browser.
+- A browser needs a desktop runtime or a server/backend to load pages directly.
+- This app works by using Electron's embedded browser engine, so it can load websites normally.
+
+How to run
+1. Install dependencies:
+
+```bash
+npm install
+```
+
+2. Start the app:
+
+```bash
+npm start
+```
+
+This will open a real browser window that loads websites directly.
 
 Important note
-- A real browser cannot load arbitrary websites inside an iframe on GitHub Pages because most sites block iframe embedding for security reasons.
-- To make this actually work, the app uses a public proxy (`https://r.jina.ai`) to fetch public web pages and display their content inside the app instead of embedding the site directly.
-
-What works
-- Address bar navigation
-- Back / forward / reload / home buttons
-- Multiple tabs
-- Search support
-- Page content display through a proxy
-
-What is limited
-- This is not a full browser engine like Chrome or Firefox.
-- Some sites may block the proxy or return content in a limited format.
-- It is optimized for static hosting and real-world GitHub Pages constraints.
-
-Run locally
-```bash
-python3 -m http.server 8000
-```
-
-Then visit:
-```text
-http://localhost:8000
-```
-
-Deploy to GitHub Pages
-1. Push this repo to GitHub.
-2. Open the repository Settings → Pages.
-3. Select the default branch and root folder.
-4. Publish the site.
+- GitHub Pages is not suitable for a real browser because it cannot run a browser engine or backend logic.
+- If you want this app hosted online, you would need a real web server or a desktop packaging solution, not GitHub Pages.
 
 Files
-- `index.html` — app shell
-- `styles.css` — browser layout and page styling
-- `script.js` — navigation, tabs, proxy fetch logic
+- `main.js` — Electron app entry point
+- `index.html` — browser UI
+- `styles.css` — styling
+- `script.js` — browser navigation logic

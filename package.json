@@ -1,0 +1,12 @@
+{
+  "name": "real-browser",
+  "version": "1.0.0",
+  "description": "A real browser app built with Electron that loads websites directly.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^30.0.0"
+  }
+}

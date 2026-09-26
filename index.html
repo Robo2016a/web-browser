@@ -3,37 +3,29 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Working Browser</title>
+    <title>Real Browser</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <div class="browser-shell">
       <header class="browser-bar">
         <div class="toolbar left-tools">
-          <button class="icon-btn" id="backBtn" aria-label="Back">←</button>
-          <button class="icon-btn" id="forwardBtn" aria-label="Forward">→</button>
-          <button class="icon-btn" id="reloadBtn" aria-label="Reload">↻</button>
-          <button class="icon-btn" id="homeBtn" aria-label="Home">⌂</button>
+          <button class="icon-btn" id="backBtn" title="Back">←</button>
+          <button class="icon-btn" id="forwardBtn" title="Forward">→</button>
+          <button class="icon-btn" id="reloadBtn" title="Reload">↻</button>
+          <button class="icon-btn" id="homeBtn" title="Home">⌂</button>
         </div>
 
         <div class="address-wrap">
           <div class="site-lock" id="siteLock">🔒</div>
-          <input
-            id="addressBar"
-            type="text"
-            spellcheck="false"
-            aria-label="Address bar"
-            value="https://example.com"
-          />
+          <input id="addressBar" type="text" spellcheck="false" value="https://example.com" />
           <button id="goBtn" class="go-btn">Go</button>
         </div>
       </header>
 
-      <div class="tab-bar" id="tabBar"></div>
-
       <main class="content-area">
         <div id="loadingIndicator" class="loading-indicator hidden">Loading…</div>
-        <div id="pageView" class="page-view"></div>
+        <webview id="browserView" src="https://example.com" disablewebsecurity="false"></webview>
       </main>
     </div>
 
