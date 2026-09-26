@@ -1,38 +1,40 @@
-# Web Browser for GitHub Pages
+# Working Browser for GitHub Pages
 
-This project is a lightweight browser-style app built with plain HTML, CSS, and JavaScript so it can be deployed to GitHub Pages without any backend.
+This project is a browser-style app built with plain HTML, CSS, and JavaScript so it can be hosted on GitHub Pages.
 
-Features
-- Address bar with URL navigation
-- Back / forward / reload / home controls
+Important note
+- A real browser cannot load arbitrary websites inside an iframe on GitHub Pages because most sites block iframe embedding for security reasons.
+- To make this actually work, the app uses a public proxy (`https://r.jina.ai`) to fetch public web pages and display their content inside the app instead of embedding the site directly.
+
+What works
+- Address bar navigation
+- Back / forward / reload / home buttons
 - Multiple tabs
-- Search fallback for text queries
-- HTTPS/HTTP lock indicator
-- GitHub Pages friendly static deployment
+- Search support
+- Page content display through a proxy
 
-How to run locally
-1. Open `index.html` in a browser, or
-2. Serve the directory with a local static server:
+What is limited
+- This is not a full browser engine like Chrome or Firefox.
+- Some sites may block the proxy or return content in a limited format.
+- It is optimized for static hosting and real-world GitHub Pages constraints.
 
+Run locally
 ```bash
 python3 -m http.server 8000
 ```
 
-Then visit `http://localhost:8000`.
+Then visit:
+```text
+http://localhost:8000
+```
 
-How to deploy to GitHub Pages
-1. Push this repository to GitHub.
-2. In the repository settings, enable GitHub Pages.
-3. Choose the root branch (`main`) and the root folder (`/`).
-4. Your site will be published at:
+Deploy to GitHub Pages
+1. Push this repo to GitHub.
+2. Open the repository Settings → Pages.
+3. Select the default branch and root folder.
+4. Publish the site.
 
-`https://<your-username>.github.io/web-browser/`
-
-Notes
-- Some sites block being embedded in an iframe for security reasons. That is normal browser behavior and not a defect in this app.
-- This is a browser shell rather than a full browser engine, which is the most practical approach for a static GitHub Pages project.
-
-File structure
-- `index.html` — main app shell
-- `styles.css` — browser styling
-- `script.js` — navigation logic and tab system
+Files
+- `index.html` — app shell
+- `styles.css` — browser layout and page styling
+- `script.js` — navigation, tabs, proxy fetch logic

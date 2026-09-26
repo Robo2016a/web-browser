@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Web Browser</title>
+    <title>Working Browser</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -32,22 +32,8 @@
       <div class="tab-bar" id="tabBar"></div>
 
       <main class="content-area">
-        <div class="frame-overlay hidden" id="frameOverlay">
-          <div class="overlay-card">
-            <h2>Page blocked from embedding</h2>
-            <p>
-              This site is refusing to open inside an iframe, which is common for
-              security reasons. Try a different site or use an address that allows
-              embedding.
-            </p>
-            <button id="closeOverlayBtn">Dismiss</button>
-          </div>
-        </div>
-        <iframe
-          id="browserFrame"
-          title="Web Browser Content"
-          sandbox="allow-scripts allow-forms allow-popups allow-modals allow-same-origin"
-        ></iframe>
+        <div id="loadingIndicator" class="loading-indicator hidden">Loading…</div>
+        <div id="pageView" class="page-view"></div>
       </main>
     </div>
 

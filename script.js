@@ -8,9 +8,32 @@ const state = {
 
 const tabBar = document.getElementById("tabBar");
 const addressBar = document.getElementById("addressBar");
-const browserFrame = document.getElementById("browserFrame");
-const frameOverlay = document.getElementById("frameOverlay");
+const pageView = document.getElementById("pageView");
+const loadingIndicator = document.getElementById("loadingIndicator");
 const siteLock = document.getElementById("siteLock");
+
+function escapeHtml(value) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function getTabTitle(url) {
+  try {
+    const parsed = new URL(url);
+    const hostname = parsed.hostname.replace(/^www\./, "");
+    return hostname || "New tab";
+  } catch {
+    return "New tab";
+  }
+}
+
+function getActiveTab() {
+  return state.tabs.find((tab) => tab.id === state.activeTabId) || state.tabs[0];
+}
 
 function createTab(url = defaultHomeUrl) {
   const id = state.nextTabId++;
@@ -26,20 +49,6 @@ function createTab(url = defaultHomeUrl) {
   state.activeTabId = id;
   renderTabs();
   loadUrl(url, false);
-}
-
-function getTabTitle(url) {
-  try {
-    const parsed = new URL(url);
-    const hostname = parsed.hostname.replace(/^www\./, "");
-    return hostname || "New tab";
-  } catch {
-    return "New tab";
-  }
-}
-
-function getActiveTab() {
-  return state.tabs.find((tab) => tab.id === state.activeTabId) || state.tabs[0];
 }
 
 function renderTabs() {
@@ -110,7 +119,7 @@ function closeTab(tabId) {
 }
 
 function normalizeUrl(rawValue) {
-  const value = rawValue.trim();
+  const value = (rawValue || "").trim();
 
   if (!value) {
     return defaultHomeUrl;
@@ -131,12 +140,124 @@ function normalizeUrl(rawValue) {
   return `https://www.google.com/search?q=${encodeURIComponent(value)}`;
 }
 
-function updateSecurityIndicator(url) {
+function applySecurityIndicator(url) {
   try {
     const parsed = new URL(url);
     siteLock.textContent = parsed.protocol === "https:" ? "🔒" : "🔓";
   } catch {
     siteLock.textContent = "🔒";
+  }
+}
+
+function proxyUrlFor(url) {
+  const clean = url.replace(/^https?:\/\//i, "");
+  return `https://r.jina.ai/http://${clean}`;
+}
+
+function renderMarkdownContent(markdownText) {
+  const lines = markdownText.split(/\n/);
+  let html = "";
+  let inList = false;
+
+  const flushList = () => {
+    if (inList) {
+      html += "</ul>";
+      inList = false;
+    }
+  };
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trimEnd();
+
+    if (!line.trim()) {
+      flushList();
+      html += "<br />";
+      continue;
+    }
+
+    if (/^#{1,6}\s/.test(line)) {
+      flushList();
+      const level = line.match(/^#+/)[0].length;
+      const text = line.replace(/^#{1,6}\s*/, "");
+      html += `<h${level}>${escapeHtml(text)}</h${level}>`;
+      continue;
+    }
+
+    if (/^[-*]\s+/.test(line)) {
+      if (!inList) {
+        html += "<ul>";
+        inList = true;
+      }
+      html += `<li>${escapeHtml(line.replace(/^[-*]\s+/, ""))}</li>`;
+      continue;
+    }
+
+    if (/^>\s?/.test(line)) {
+      flushList();
+      html += `<blockquote>${escapeHtml(line.replace(/^>\s?/, ""))}</blockquote>`;
+      continue;
+    }
+
+    if (/^```/.test(line)) {
+      flushList();
+      const codeBlock = [];
+      i++;
+      while (i < lines.length && !/^```\s*$/.test(lines[i])) {
+        codeBlock.push(lines[i]);
+        i++;
+      }
+      html += `<pre>${escapeHtml(codeBlock.join("\n"))}</pre>`;
+      continue;
+    }
+
+    flushList();
+    html += `<p>${escapeHtml(line)}</p>`;
+  }
+
+  flushList();
+  return `<article class="page-card">${html || "<p>No content.</p>"}</article>`;
+}
+
+function renderError(message) {
+  pageView.innerHTML = `
+    <div class="empty-state">
+      <div class="empty-card">
+        <h1>Unable to load this page</h1>
+        <p>${escapeHtml(message)}</p>
+      </div>
+    </div>
+  `;
+}
+
+async function fetchPage(url) {
+  const proxy = proxyUrlFor(url);
+  loadingIndicator.classList.remove("hidden");
+
+  try {
+    const response = await fetch(proxy, {
+      headers: {
+        Accept: "text/plain, text/markdown, text/html;q=0.9, */*;q=0.8",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Remote fetch failed with status ${response.status}.`);
+    }
+
+    const text = await response.text();
+    const content = text.trim();
+
+    if (!content) {
+      throw new Error("The page is empty or blocked by the remote host.");
+    }
+
+    pageView.innerHTML = renderMarkdownContent(content);
+  } catch (error) {
+    renderError(
+      `${error.message}. This usually happens when the site blocks browser requests or the proxy cannot access it.`
+    );
+  } finally {
+    loadingIndicator.classList.add("hidden");
   }
 }
 
@@ -151,7 +272,7 @@ function loadUrl(url, shouldPushHistory = true) {
   activeTab.url = validUrl;
   activeTab.title = getTabTitle(validUrl);
   addressBar.value = validUrl;
-  updateSecurityIndicator(validUrl);
+  applySecurityIndicator(validUrl);
 
   if (shouldPushHistory) {
     const last = activeTab.history[activeTab.historyIndex];
@@ -163,25 +284,13 @@ function loadUrl(url, shouldPushHistory = true) {
   }
 
   renderTabs();
-
-  try {
-    browserFrame.src = validUrl;
-    frameOverlay.classList.add("hidden");
-  } catch {
-    frameOverlay.classList.remove("hidden");
-  }
-
-  const isAbout = /^about:/i.test(validUrl);
-  if (isAbout) {
-    browserFrame.srcdoc = `<html><body style="font-family:Segoe UI, sans-serif; display:grid; place-items:center; height:100vh; background:#f5f7fb; color:#1d2430;"><div style="padding:2rem; max-width:600px; text-align:center"><h1>Browser shell</h1><p>This is a lightweight browser UI built for static hosting.</p><p>Use the address bar to browse websites or search the web.</p></div></body></html>`;
-  }
+  fetchPage(validUrl);
 }
 
 function goToInput() {
   const current = getActiveTab();
   if (!current) return;
-  const nextUrl = addressBar.value;
-  loadUrl(nextUrl, true);
+  loadUrl(addressBar.value, true);
 }
 
 function navigateHistory(direction) {
@@ -196,40 +305,29 @@ function navigateHistory(direction) {
   tab.url = targetUrl;
   tab.title = getTabTitle(targetUrl);
   addressBar.value = targetUrl;
-  updateSecurityIndicator(targetUrl);
+  applySecurityIndicator(targetUrl);
   renderTabs();
-  browserFrame.src = targetUrl;
-  frameOverlay.classList.add("hidden");
+  fetchPage(targetUrl);
 }
 
 function refreshPage() {
   const current = getActiveTab();
   if (!current) return;
-  browserFrame.src = current.url;
+  fetchPage(current.url);
 }
 
-function setHomePage() {
-  const current = getActiveTab();
-  if (!current) return;
-  current.homeUrl = defaultHomeUrl;
-  const homePage = document.createElement("div");
-  homePage.style.display = "grid";
-  homePage.style.placeItems = "center";
-  homePage.style.height = "100%";
-  homePage.style.fontFamily = "Segoe UI, sans-serif";
-  homePage.innerHTML = `
-    <div style="max-width: 720px; text-align: center; padding: 2rem;">
-      <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">Welcome</h1>
-      <p style="font-size: 1.05rem; color: #5d6470; line-height: 1.6;">
-        This is a lightweight browser shell designed to run on GitHub Pages.
-      </p>
-      <p style="font-size: 1rem; color: #5d6470; line-height: 1.6;">
-        Enter a URL or search term above to begin.
-      </p>
+function showHomeScreen() {
+  pageView.innerHTML = `
+    <div class="empty-state">
+      <div class="empty-card">
+        <h1>Welcome</h1>
+        <p>
+          This is a static browser app built for GitHub Pages.
+          Enter a website or search term above to browse through a proxy-backed content view.
+        </p>
+      </div>
     </div>
   `;
-  browserFrame.srcdoc = homePage.innerHTML;
-  frameOverlay.classList.add("hidden");
 }
 
 function setupEventListeners() {
@@ -246,39 +344,18 @@ function setupEventListeners() {
   document.getElementById("reloadBtn").addEventListener("click", refreshPage);
   document.getElementById("homeBtn").addEventListener("click", () => {
     const activeTab = getActiveTab();
-    const homeUrl = activeTab?.homeUrl || defaultHomeUrl;
-    loadUrl(homeUrl, true);
-  });
-
-  document.getElementById("closeOverlayBtn").addEventListener("click", () => {
-    frameOverlay.classList.add("hidden");
-  });
-
-  browserFrame.addEventListener("load", () => {
-    try {
-      const frameLocation = browserFrame.contentWindow.location.href;
-      const activeTab = getActiveTab();
-      if (!activeTab) return;
-
-      const maybeUrl = frameLocation.startsWith("about:blank") ? activeTab.url : frameLocation;
-      activeTab.url = maybeUrl;
-      activeTab.title = getTabTitle(maybeUrl);
-      addressBar.value = maybeUrl;
-      updateSecurityIndicator(maybeUrl);
-      renderTabs();
-    } catch {
-      frameOverlay.classList.remove("hidden");
+    if (activeTab) {
+      loadUrl(defaultHomeUrl, true);
     }
   });
 }
 
 function init() {
-  const initial = defaultHomeUrl;
   state.tabs = [];
   state.nextTabId = 1;
-  createTab(initial);
+  createTab(defaultHomeUrl);
   setupEventListeners();
-  renderTabs();
+  showHomeScreen();
 }
 
 init();
