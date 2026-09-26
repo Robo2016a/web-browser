@@ -1,12 +1,23 @@
 # Browser
 
-A Chrome-like browser built with Electron.
+A Chrome-like browser built with Electron featuring:
+
+- Clean, intuitive Chrome-inspired toolbar
+- Full-page rendering with no missing content
+- Back, forward, and reload navigation
+- Address bar with URL/search support
+- HTTPS/HTTP security indicator
+- Google account management and switching
+- Add multiple Google accounts
+- Switch between accounts with one click
+- Keyboard shortcuts (Ctrl+R, Ctrl+L, Ctrl+Arrow Keys)
+- Responsive design
 
 ## Installation
 
-1. Install Node.js from https://nodejs.org (LTS version recommended)
+1. Install Node.js LTS from https://nodejs.org
 
-2. Clone or download this repository and navigate to it:
+2. Clone and navigate to the repository:
    ```bash
    git clone https://github.com/Robo2016a/web-browser.git
    cd web-browser
@@ -17,39 +28,46 @@ A Chrome-like browser built with Electron.
    npm install
    ```
 
-## Running the Browser
+## Running
 
-Start the browser with:
 ```bash
 npm start
 ```
 
-The browser window will open and start at Google.com.
+The browser launches at Google.com by default.
 
 ## Features
 
-- Clean, intuitive Chrome-like interface
-- Back, forward, and reload navigation buttons
-- Address bar with security indicators
-- Loading bar animation
-- Supports both URLs and search queries
-- HTTPS/HTTP security lock indicator
-- Responsive design
-- Full page rendering
+### Navigation
+- Back/Forward buttons
+- Reload page
+- Address bar (URL or search)
+- Keyboard shortcuts:
+  - `Ctrl+R` / `Cmd+R`: Reload
+  - `Ctrl+L` / `Cmd+L`: Focus address bar
+  - `Ctrl+Left` / `Cmd+Left`: Back
+  - `Ctrl+Right` / `Cmd+Right`: Forward
 
-## Usage
-
-- Type a URL or search term in the address bar and press Enter
-- Use the back/forward buttons to navigate
-- Click the reload button to refresh the page
-- The browser always starts at Google.com
+### Google Accounts
+- Click the account icon in the toolbar
+- Switch between existing accounts instantly
+- Add new Google accounts
+- Accounts persist across sessions
 
 ## Troubleshooting
 
 **"Cannot find module" error:**
-- Delete `node_modules` folder
-- Run `npm install` again
+```bash
+rm -rf node_modules
+npm install
+```
 
 **Blank window:**
-- Make sure you're in the correct directory
-- Check that `index.html` exists in the same folder as `main.js`
+- Make sure `index.html` is in the project root
+- Check that all files are in the correct location
+- Try deleting `node_modules` and reinstalling
+
+**Pages not loading:**
+- Check your internet connection
+- Try a different website
+- Clear browser cache or try an incognito window

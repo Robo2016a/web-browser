@@ -1,18 +1,14 @@
 {
   "name": "browser",
   "version": "1.0.0",
-  "description": "A Chrome-like browser built with Electron",
+  "description": "Chrome-like browser with Google account switching",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "dev": "electron . --remote-debugging-port=9222"
   },
-  "keywords": [
-    "browser",
-    "electron"
-  ],
-  "author": "",
-  "license": "MIT",
   "devDependencies": {
-    "electron": "^latest"
+    "electron": "^latest",
+    "electron-is-dev": "^2.0.0"
   }
 }

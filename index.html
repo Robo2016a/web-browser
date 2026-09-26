@@ -8,20 +8,20 @@
   </head>
   <body>
     <div class="browser-container">
-      <!-- Top toolbar -->
+      <!-- Chrome-style toolbar -->
       <div class="toolbar">
-        <div class="nav-buttons">
-          <button class="nav-btn" id="backBtn" title="Back">
+        <div class="toolbar-left">
+          <button class="nav-btn" id="backBtn" title="Back (Ctrl+Left)">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M15 18l-6-6 6-6"></path>
             </svg>
           </button>
-          <button class="nav-btn" id="forwardBtn" title="Forward">
+          <button class="nav-btn" id="forwardBtn" title="Forward (Ctrl+Right)">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M9 18l6-6-6-6"></path>
             </svg>
           </button>
-          <button class="nav-btn" id="reloadBtn" title="Reload">
+          <button class="nav-btn" id="reloadBtn" title="Reload (Ctrl+R)">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polyline points="23 4 23 10 17 10"></polyline>
               <polyline points="1 20 1 14 7 14"></polyline>
@@ -30,32 +30,55 @@
           </button>
         </div>
 
-        <div class="address-bar-container">
-          <input
-            id="addressBar"
-            class="address-bar"
-            type="text"
-            placeholder="Search Google or type URL"
-            value="https://google.com"
-          />
-          <span class="security-icon" id="securityIcon">🔒</span>
+        <div class="address-bar-wrapper">
+          <div class="address-bar-container">
+            <span class="security-icon" id="securityIcon">🔒</span>
+            <input
+              id="addressBar"
+              class="address-bar"
+              type="text"
+              placeholder="Search Google or type a URL"
+              spellcheck="false"
+            />
+          </div>
         </div>
 
-        <div class="menu-buttons">
-          <button class="menu-btn" id="settingsBtn" title="Settings">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="1"></circle>
-              <circle cx="12" cy="5" r="1"></circle>
-              <circle cx="12" cy="19" r="1"></circle>
+        <div class="toolbar-right">
+          <button class="account-btn" id="accountBtn" title="Google Accounts">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path>
+            </svg>
+          </button>
+          <button class="menu-btn" id="menuBtn" title="Menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"></path>
             </svg>
           </button>
         </div>
       </div>
 
-      <!-- Main content area -->
-      <div class="content-wrapper">
-        <div id="loadingBar" class="loading-bar"></div>
-        <iframe id="browserFrame" src="about:blank" title="Browser content"></iframe>
+      <!-- Account dropdown panel -->
+      <div id="accountPanel" class="account-panel hidden">
+        <div class="account-panel-header">
+          <h3>Google Accounts</h3>
+          <button class="close-btn" id="closeAccountPanel">✕</button>
+        </div>
+        <div class="account-list" id="accountList">
+          <div class="account-item add-account" id="addAccountBtn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="#1f2937">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"></path>
+            </svg>
+            <span>Add Account</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading bar -->
+      <div id="loadingBar" class="loading-bar"></div>
+
+      <!-- Main browser view -->
+      <div class="browser-view-container">
+        <iframe id="browserView" title="Web page content"></iframe>
       </div>
     </div>
 
