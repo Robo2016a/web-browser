@@ -7,37 +7,42 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <main class="browser-container">
+    <div class="browser-container">
       <header class="toolbar">
         <div class="nav-buttons">
-          <button class="icon-button" id="backBtn" title="Back" aria-label="Back">‹</button>
-          <button class="icon-button" id="forwardBtn" title="Forward" aria-label="Forward">›</button>
-          <button class="icon-button" id="reloadBtn" title="Reload" aria-label="Reload">↻</button>
+          <button class="icon-button" id="backBtn" title="Back">‹</button>
+          <button class="icon-button" id="forwardBtn" title="Forward">›</button>
+          <button class="icon-button" id="reloadBtn" title="Reload">↻</button>
         </div>
 
         <div class="address-shell">
           <span id="securityIcon" class="security-icon">🔒</span>
-          <input id="addressBar" autocomplete="off" spellcheck="false" placeholder="Search Google or type a URL" />
-          <button id="clearBtn" class="clear-button" aria-label="Clear address" hidden>×</button>
+          <input
+            id="addressBar"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="Search Google or type a URL"
+          />
+          <button id="clearBtn" class="clear-button" hidden>×</button>
         </div>
 
         <div class="toolbar-actions">
-          <button id="accountBtn" class="account-button" title="Google accounts" aria-label="Google accounts">●</button>
-          <button id="menuBtn" class="icon-button" title="Menu" aria-label="Menu">⋮</button>
+          <button id="accountBtn" class="account-button" title="Google accounts">●</button>
+          <button id="menuBtn" class="icon-button" title="Menu">⋮</button>
         </div>
       </header>
 
       <section class="account-panel" id="accountPanel" hidden>
         <div class="panel-title">Google accounts</div>
-        <p class="panel-note">Sign in or switch accounts on Google itself. Account sessions are kept by this local Electron profile.</p>
+        <p class="panel-note">Sign in or switch accounts on Google itself.</p>
         <button id="openAccountsBtn" class="panel-action">Open Google account chooser</button>
       </section>
 
       <div id="loadingBar" class="loading-bar"></div>
-      <section class="page-container">
-        <webview id="browserView" src="https://www.google.com/" partition="persist:browser" allowpopups></webview>
-      </section>
-    </main>
+
+      <webview id="browserView" partition="persist:browser" allowpopups></webview>
+    </div>
+
     <script src="renderer.js"></script>
   </body>
 </html>

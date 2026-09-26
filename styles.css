@@ -1,6 +1,11 @@
-* { box-sizing: border-box; margin: 0; padding: 0; }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-html, body {
+html,
+body {
   width: 100%;
   height: 100%;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
@@ -10,23 +15,22 @@ html, body {
 }
 
 .browser-container {
-  width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  height: 100%;
   background: #fff;
 }
 
 .toolbar {
-  height: 56px;
-  flex: 0 0 56px;
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 8px 12px;
   background: linear-gradient(to bottom, #2d2e31, #202124);
   border-bottom: 1px solid #000;
-  z-index: 100;
+  height: 56px;
+  flex-shrink: 0;
 }
 
 .nav-buttons,
@@ -110,11 +114,6 @@ html, body {
   color: #9aa0a6;
 }
 
-#addressBar::selection {
-  background: #8ab4f8;
-  color: #fff;
-}
-
 .clear-button {
   border: none;
   background: transparent;
@@ -146,20 +145,10 @@ html, body {
   width: 70%;
 }
 
-.page-container {
-  position: relative;
+#browserView {
   flex: 1;
-  min-height: 0;
   width: 100%;
-  background: #fff;
-  overflow: hidden;
-}
-
-webview {
-  width: 100%;
-  height: 100%;
   border: none;
-  display: block;
 }
 
 .account-panel {
@@ -210,34 +199,4 @@ webview {
 
 .panel-action:hover {
   background: #1765cc;
-}
-
-@media (max-width: 900px) {
-  .toolbar {
-    gap: 8px;
-    padding: 6px 8px;
-    height: 48px;
-    flex: 0 0 48px;
-  }
-
-  .loading-bar {
-    top: 48px;
-  }
-
-  .icon-button,
-  .account-button {
-    width: 36px;
-    height: 36px;
-  }
-
-  .address-shell {
-    height: 36px;
-  }
-}
-
-@media (max-width: 600px) {
-  .account-panel {
-    width: calc(100vw - 32px);
-    right: 16px;
-  }
 }

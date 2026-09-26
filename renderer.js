@@ -116,22 +116,18 @@ document.getElementById("menuBtn").addEventListener("click", () => {
 
 // Webview event handlers
 webview.addEventListener("did-start-loading", beginLoading);
-
 webview.addEventListener("did-stop-loading", () => {
   endLoading();
   updateAddress(webview.getURL());
 });
-
 webview.addEventListener("did-navigate", () => {
   updateAddress(webview.getURL());
   updateButtons();
 });
-
 webview.addEventListener("did-navigate-in-page", () => {
   updateAddress(webview.getURL());
   updateButtons();
 });
-
 webview.addEventListener("did-fail-load", () => {
   endLoading();
 });
@@ -161,11 +157,12 @@ window.addEventListener("keydown", (event) => {
   }
 });
 
-// Initial setup
-updateAddress(DEFAULT_URL);
-updateButtons();
-
-// Ensure webview is ready before navigating
+// Wait for webview to be ready, then load Google
 webview.addEventListener("dom-ready", () => {
   console.log("Webview ready");
+  navigate(DEFAULT_URL);
 });
+
+// Initial address bar update
+updateAddress(DEFAULT_URL);
+updateButtons();
