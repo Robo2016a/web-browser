@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web Browser</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="browser-shell">
+      <header class="browser-bar">
+        <div class="toolbar left-tools">
+          <button class="icon-btn" id="backBtn" aria-label="Back">←</button>
+          <button class="icon-btn" id="forwardBtn" aria-label="Forward">→</button>
+          <button class="icon-btn" id="reloadBtn" aria-label="Reload">↻</button>
+          <button class="icon-btn" id="homeBtn" aria-label="Home">⌂</button>
+        </div>
+
+        <div class="address-wrap">
+          <div class="site-lock" id="siteLock">🔒</div>
+          <input
+            id="addressBar"
+            type="text"
+            spellcheck="false"
+            aria-label="Address bar"
+            value="https://example.com"
+          />
+          <button id="goBtn" class="go-btn">Go</button>
+        </div>
+      </header>
+
+      <div class="tab-bar" id="tabBar"></div>
+
+      <main class="content-area">
+        <div class="frame-overlay hidden" id="frameOverlay">
+          <div class="overlay-card">
+            <h2>Page blocked from embedding</h2>
+            <p>
+              This site is refusing to open inside an iframe, which is common for
+              security reasons. Try a different site or use an address that allows
+              embedding.
+            </p>
+            <button id="closeOverlayBtn">Dismiss</button>
+          </div>
+        </div>
+        <iframe
+          id="browserFrame"
+          title="Web Browser Content"
+          sandbox="allow-scripts allow-forms allow-popups allow-modals allow-same-origin"
+        ></iframe>
+      </main>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

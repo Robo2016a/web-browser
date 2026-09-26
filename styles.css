@@ -1,0 +1,260 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #f4f5f7;
+  --bar: #202124;
+  --bar-alt: #2d3036;
+  --surface: #ffffff;
+  --surface-alt: #f0f2f5;
+  --line: #dfe3ea;
+  --text: #1d2430;
+  --muted: #5d6470;
+  --primary: #1a73e8;
+  --danger: #d93025;
+  --shadow: rgba(16, 24, 40, 0.12);
+}
+
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--bg);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--text);
+}
+
+body {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  padding: 20px;
+}
+
+.browser-shell {
+  width: min(100%, 1500px);
+  height: calc(100vh - 40px);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: 0 16px 30px var(--shadow);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.browser-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: linear-gradient(180deg, var(--bar), var(--bar-alt));
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.icon-btn,
+.go-btn,
+.close-tab {
+  border: none;
+  background: rgba(255,255,255,0.08);
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.18s ease, transform 0.18s ease;
+}
+
+.icon-btn {
+  width: 32px;
+  height: 32px;
+  font-size: 18px;
+}
+
+.go-btn {
+  padding: 10px 16px;
+  font-weight: 600;
+  background: var(--primary);
+}
+
+.icon-btn:hover,
+.go-btn:hover,
+.close-tab:hover {
+  background: rgba(255,255,255,0.16);
+}
+
+.icon-btn:active,
+.go-btn:active,
+.close-tab:active {
+  transform: translateY(1px);
+}
+
+.address-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+  background: rgba(255,255,255,0.07);
+  border-radius: 12px;
+  padding: 6px 8px 6px 10px;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.site-lock {
+  font-size: 16px;
+  opacity: 0.9;
+}
+
+#addressBar {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 15px;
+  min-width: 0;
+  outline: none;
+}
+
+#addressBar::placeholder {
+  color: rgba(255,255,255,0.55);
+}
+
+.tab-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #e9ebef;
+  border-bottom: 1px solid var(--line);
+  padding: 8px 12px 6px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 220px;
+  min-width: 120px;
+  background: #eef1f5;
+  color: var(--text);
+  border: 1px solid transparent;
+  border-radius: 10px 10px 0 0;
+  padding: 8px 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.tab.active {
+  background: var(--surface);
+  border-color: var(--line);
+  border-bottom-color: var(--surface);
+}
+
+.tab .title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  font-size: 13px;
+}
+
+.close-tab {
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  font-size: 12px;
+  background: rgba(0,0,0,0.08);
+  color: var(--muted);
+}
+
+.content-area {
+  position: relative;
+  flex: 1;
+  background: #fafbfc;
+}
+
+#browserFrame {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: white;
+}
+
+.frame-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(17, 24, 39, 0.45);
+  z-index: 5;
+}
+
+.frame-overlay.hidden {
+  display: none;
+}
+
+.overlay-card {
+  max-width: 440px;
+  background: white;
+  color: var(--text);
+  border-radius: 16px;
+  padding: 28px 24px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
+  text-align: center;
+}
+
+.overlay-card h2 {
+  margin: 0 0 12px;
+  font-size: 24px;
+}
+
+.overlay-card p {
+  margin: 0 0 20px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.overlay-card button {
+  border: none;
+  background: var(--primary);
+  color: white;
+  border-radius: 10px;
+  padding: 10px 18px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+@media (max-width: 720px) {
+  body {
+    padding: 0;
+  }
+
+  .browser-shell {
+    width: 100%;
+    height: 100vh;
+    border-radius: 0;
+  }
+
+  .browser-bar {
+    gap: 8px;
+    padding: 8px 10px;
+  }
+
+  .toolbar {
+    gap: 6px;
+  }
+
+  .icon-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 16px;
+  }
+}
