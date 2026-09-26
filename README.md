@@ -1,33 +1,57 @@
-# Real Browser
+# Browser
 
-This is a real browser-style app built with Electron, not a static GitHub Pages page.
+A Chrome-like browser built with Electron.
 
-Why this is different
-- GitHub Pages is static-only and cannot host a real browser.
-- A browser needs a desktop runtime or a server/backend to load pages directly.
-- This app works by using Electron's embedded browser engine, so it can load websites normally.
+## Installation
 
-How to run
-1. Install dependencies:
+1. Install Node.js from https://nodejs.org (LTS version recommended)
 
-```bash
-npm install
-```
+2. Clone or download this repository and navigate to it:
+   ```bash
+   git clone https://github.com/Robo2016a/web-browser.git
+   cd web-browser
+   ```
 
-2. Start the app:
+3. Install dependencies:
+   ```bash
+   npm install
+   ```
 
+## Running the Browser
+
+Start the browser with:
 ```bash
 npm start
 ```
 
-This will open a real browser window that loads websites directly.
+The browser window will open and start at Google.com.
 
-Important note
-- GitHub Pages is not suitable for a real browser because it cannot run a browser engine or backend logic.
-- If you want this app hosted online, you would need a real web server or a desktop packaging solution, not GitHub Pages.
+## Features
 
-Files
-- `main.js` — Electron app entry point
-- `index.html` — browser UI
-- `styles.css` — styling
-- `script.js` — browser navigation logic
+- Clean, intuitive Chrome-like interface
+- Back, forward, and reload navigation buttons
+- Address bar with security indicators
+- Loading bar animation
+- Supports both URLs and search queries
+- HTTPS/HTTP security lock indicator
+- Responsive design
+
+## Usage
+
+- Type a URL or search term in the address bar and press Enter
+- Use the back/forward buttons to navigate
+- Click the reload button to refresh the page
+- The browser always starts at Google.com
+
+## Troubleshooting
+
+**"Cannot find module" error:**
+- Delete `node_modules` folder
+- Run `npm install` again
+
+**Blank window:**
+- Make sure you're in the correct directory
+- Check that `index.html` exists in the same folder as `main.js`
+
+**"Webview not available" error:**
+- This is a known Electron issue. Update Electron: `npm install electron@latest`

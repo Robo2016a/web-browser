@@ -3,30 +3,60 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Real Browser</title>
+    <title>Browser</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="browser-shell">
-      <header class="browser-bar">
-        <div class="toolbar left-tools">
-          <button class="icon-btn" id="backBtn" title="Back">←</button>
-          <button class="icon-btn" id="forwardBtn" title="Forward">→</button>
-          <button class="icon-btn" id="reloadBtn" title="Reload">↻</button>
-          <button class="icon-btn" id="homeBtn" title="Home">⌂</button>
+    <div class="browser-container">
+      <!-- Top toolbar -->
+      <div class="toolbar">
+        <div class="nav-buttons">
+          <button class="nav-btn" id="backBtn" title="Back">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M15 18l-6-6 6-6"></path>
+            </svg>
+          </button>
+          <button class="nav-btn" id="forwardBtn" title="Forward">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 18l6-6-6-6"></path>
+            </svg>
+          </button>
+          <button class="nav-btn" id="reloadBtn" title="Reload">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <polyline points="1 20 1 14 7 14"></polyline>
+              <path d="M3.51 9a9 9 0 0114.85-3.36M20.49 15a9 9 0 01-14.85 3.36"></path>
+            </svg>
+          </button>
         </div>
 
-        <div class="address-wrap">
-          <div class="site-lock" id="siteLock">🔒</div>
-          <input id="addressBar" type="text" spellcheck="false" value="https://example.com" />
-          <button id="goBtn" class="go-btn">Go</button>
+        <div class="address-bar-container">
+          <input
+            id="addressBar"
+            class="address-bar"
+            type="text"
+            placeholder="Search Google or type URL"
+            value="https://google.com"
+          />
+          <span class="security-icon" id="securityIcon">🔒</span>
         </div>
-      </header>
 
-      <main class="content-area">
-        <div id="loadingIndicator" class="loading-indicator hidden">Loading…</div>
-        <webview id="browserView" src="https://example.com" disablewebsecurity="false"></webview>
-      </main>
+        <div class="menu-buttons">
+          <button class="menu-btn" id="settingsBtn" title="Settings">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="1"></circle>
+              <circle cx="12" cy="5" r="1"></circle>
+              <circle cx="12" cy="19" r="1"></circle>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Main content area -->
+      <div class="content-wrapper">
+        <div id="loadingBar" class="loading-bar"></div>
+        <webview id="browserView" src="https://google.com" preload="" allowpopups="true"></webview>
+      </div>
     </div>
 
     <script src="script.js"></script>
