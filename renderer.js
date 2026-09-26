@@ -1,145 +1,260 @@
-const DEFAULT_URL = "https://www.google.com/";
-const webview = document.getElementById("browserView");
+const DEFAULT_URL = "https://google.com";
+const browserView = document.getElementById("browserView");
 const addressBar = document.getElementById("addressBar");
-const securityIcon = document.getElementById("securityIcon");
 const loadingBar = document.getElementById("loadingBar");
-const clearBtn = document.getElementById("clearBtn");
-const accountPanel = document.getElementById("accountPanel");
+const securityIcon = document.getElementById("securityIcon");
 const backBtn = document.getElementById("backBtn");
 const forwardBtn = document.getElementById("forwardBtn");
 const reloadBtn = document.getElementById("reloadBtn");
+const accountBtn = document.getElementById("accountBtn");
+const menuBtn = document.getElementById("menuBtn");
+const accountPanel = document.getElementById("accountPanel");
+const accountList = document.getElementById("accountList");
+const closeAccountPanel = document.getElementById("closeAccountPanel");
+const addAccountBtn = document.getElementById("addAccountBtn");
+
+let history = [DEFAULT_URL];
+let currentIndex = 0;
+let currentUrl = DEFAULT_URL;
+let accounts = [
+  { email: "user@gmail.com", name: "User", initial: "U" },
+];
+let currentAccount = accounts[0];
+let loadingTimeout;
 
 function normalizeUrl(input) {
-  const value = (input || "").trim();
-  if (!value) return DEFAULT_URL;
-  if (/^[a-z][a-z\d+.-]*:\/\//i.test(value)) return value;
-  if (/^(localhost|127\.0\.0\.1)(:\d+)?([/?#].*)?$/i.test(value)) return `http://${value}`;
-  if (/^(www\.)?[^\s/$.]+\.[^\s/$]+/i.test(value)) return `https://${value}`;
-  return `https://www.google.com/search?q=${encodeURIComponent(value)}`;
+  const trimmed = (input || "").trim();
+
+  if (!trimmed) return DEFAULT_URL;
+
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  if (/^ftp:\/\//i.test(trimmed)) return trimmed;
+  if (/^file:\/\//i.test(trimmed)) return trimmed;
+  if (/^www\./i.test(trimmed)) return `https://${trimmed}`;
+  if (/^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}($|\/)/i.test(trimmed)) return `https://${trimmed}`;
+
+  return `https://www.google.com/search?q=${encodeURIComponent(trimmed)}`;
 }
 
-function updateAddress(url) {
-  if (!url || url === "about:blank") return;
-  addressBar.value = url;
-  clearBtn.hidden = addressBar.value.length === 0;
+function updateSecurityIcon(url) {
   try {
-    const protocol = new URL(url).protocol;
-    securityIcon.textContent = protocol === "https:" ? "🔒" : "🔓";
+    const parsed = new URL(url);
+    securityIcon.textContent = parsed.protocol === "https:" ? "🔒" : "🔓";
   } catch {
-    securityIcon.textContent = "🌐";
+    securityIcon.textContent = "🔒";
   }
 }
 
-function updateButtons() {
-  backBtn.disabled = !webview.canGoBack();
-  forwardBtn.disabled = !webview.canGoForward();
+function updateNavButtons() {
+  backBtn.disabled = currentIndex <= 0;
+  forwardBtn.disabled = currentIndex >= history.length - 1;
 }
 
-function navigate(input) {
-  const url = normalizeUrl(input);
-  updateAddress(url);
-  webview.loadURL(url);
-}
-
-function beginLoading() {
+function showLoadingBar() {
   loadingBar.classList.add("active");
   loadingBar.style.width = "35%";
+
+  clearTimeout(loadingTimeout);
+  loadingTimeout = setTimeout(() => {
+    if (loadingBar.classList.contains("active")) {
+      loadingBar.style.width = "75%";
+    }
+  }, 500);
 }
 
-function endLoading() {
+function hideLoadingBar() {
+  clearTimeout(loadingTimeout);
   loadingBar.style.width = "100%";
   setTimeout(() => {
     loadingBar.classList.remove("active");
-    loadingBar.style.width = "0";
-  }, 250);
-  updateButtons();
+    loadingBar.style.width = "0%";
+  }, 300);
 }
 
-backBtn.addEventListener("click", () => {
-  if (webview.canGoBack()) webview.goBack();
-});
-forwardBtn.addEventListener("click", () => {
-  if (webview.canGoForward()) webview.goForward();
-});
-reloadBtn.addEventListener("click", () => webview.reload());
+function navigateTo(url, addToHistory = true) {
+  const validUrl = normalizeUrl(url);
+  currentUrl = validUrl;
+  addressBar.value = validUrl;
+  updateSecurityIcon(validUrl);
 
+  if (addToHistory) {
+    history = history.slice(0, currentIndex + 1);
+    if (history[history.length - 1] !== validUrl) {
+      history.push(validUrl);
+      currentIndex = history.length - 1;
+    }
+  }
+  updateNavButtons();
+
+  showLoadingBar();
+  browserView.src = validUrl;
+}
+
+function renderAccounts() {
+  const addBtn = accountList.querySelector(".add-account");
+  accountList.innerHTML = "";
+
+  accounts.forEach((account) => {
+    const item = document.createElement("button");
+    item.className = "account-item";
+    if (account === currentAccount) {
+      item.style.backgroundColor = "#f1f3f4";
+    }
+
+    const avatar = document.createElement("div");
+    avatar.className = "account-avatar";
+    avatar.textContent = account.initial;
+    avatar.style.background = `linear-gradient(135deg, hsl(${Math.random() * 360}, 70%, 60%), hsl(${Math.random() * 360}, 70%, 60%))`;
+
+    const info = document.createElement("div");
+    info.className = "account-info";
+
+    const email = document.createElement("div");
+    email.className = "account-email";
+    email.textContent = account.email;
+
+    const name = document.createElement("div");
+    name.className = "account-name";
+    name.textContent = account.name;
+
+    info.appendChild(email);
+    info.appendChild(name);
+
+    item.appendChild(avatar);
+    item.appendChild(info);
+
+    item.addEventListener("click", () => {
+      currentAccount = account;
+      renderAccounts();
+      accountBtn.style.opacity = "1";
+      // Could load account-specific data here
+    });
+
+    accountList.appendChild(item);
+  });
+
+  accountList.appendChild(addBtn);
+}
+
+function toggleAccountPanel() {
+  accountPanel.classList.toggle("hidden");
+  if (!accountPanel.classList.contains("hidden")) {
+    renderAccounts();
+  }
+}
+
+// Navigation handlers
+backBtn.addEventListener("click", () => {
+  if (currentIndex > 0) {
+    currentIndex--;
+    const url = history[currentIndex];
+    currentUrl = url;
+    addressBar.value = url;
+    updateSecurityIcon(url);
+    updateNavButtons();
+    showLoadingBar();
+    browserView.src = url;
+  }
+});
+
+forwardBtn.addEventListener("click", () => {
+  if (currentIndex < history.length - 1) {
+    currentIndex++;
+    const url = history[currentIndex];
+    currentUrl = url;
+    addressBar.value = url;
+    updateSecurityIcon(url);
+    updateNavButtons();
+    showLoadingBar();
+    browserView.src = url;
+  }
+});
+
+reloadBtn.addEventListener("click", () => {
+  showLoadingBar();
+  browserView.src = currentUrl;
+});
+
+accountBtn.addEventListener("click", toggleAccountPanel);
+closeAccountPanel.addEventListener("click", () => {
+  accountPanel.classList.add("hidden");
+});
+
+addAccountBtn.addEventListener("click", () => {
+  const email = prompt("Enter Google email:");
+  if (email && email.includes("@")) {
+    const initial = email.charAt(0).toUpperCase();
+    const newAccount = {
+      email,
+      name: email.split("@")[0],
+      initial,
+    };
+    accounts.push(newAccount);
+    currentAccount = newAccount;
+    renderAccounts();
+  }
+});
+
+// Address bar
 addressBar.addEventListener("keydown", (event) => {
   if (event.key === "Enter") {
-    navigate(addressBar.value);
-    addressBar.blur();
+    navigateTo(addressBar.value, true);
+    accountPanel.classList.add("hidden");
   }
 });
-addressBar.addEventListener("focus", () => addressBar.select());
-addressBar.addEventListener("input", () => {
-  clearBtn.hidden = addressBar.value.length === 0;
-});
-clearBtn.addEventListener("click", () => {
-  addressBar.value = "";
-  addressBar.focus();
+
+addressBar.addEventListener("focus", () => {
+  addressBar.select();
 });
 
-document.getElementById("accountBtn").addEventListener("click", (event) => {
-  event.stopPropagation();
-  accountPanel.hidden = !accountPanel.hidden;
-});
-
-document.getElementById("openAccountsBtn").addEventListener("click", () => {
-  accountPanel.hidden = true;
-  navigate("https://accounts.google.com/AccountChooser");
-});
-
+// Close account panel when clicking outside
 document.addEventListener("click", (event) => {
-  if (!accountPanel.contains(event.target) && event.target.id !== "accountBtn") {
-    accountPanel.hidden = true;
+  if (
+    !accountPanel.contains(event.target) &&
+    !accountBtn.contains(event.target)
+  ) {
+    accountPanel.classList.add("hidden");
   }
 });
 
-document.getElementById("menuBtn").addEventListener("click", () => {
-  accountPanel.hidden = !accountPanel.hidden;
+// iframe load events
+browserView.addEventListener("load", () => {
+  hideLoadingBar();
 });
 
-webview.addEventListener("did-start-loading", beginLoading);
-webview.addEventListener("did-stop-loading", () => {
-  endLoading();
-  updateAddress(webview.getURL());
+browserView.addEventListener("error", () => {
+  hideLoadingBar();
 });
-webview.addEventListener("did-navigate", () => {
-  updateAddress(webview.getURL());
-  updateButtons();
-});
-webview.addEventListener("did-navigate-in-page", () => {
-  updateAddress(webview.getURL());
-  updateButtons();
-});
-webview.addEventListener("did-fail-load", () => endLoading());
 
-window.addEventListener("keydown", (event) => {
-  const isMac = /Mac|iPhone|iPad|iPod/.test(navigator.platform);
-  const mod = isMac ? event.metaKey : event.ctrlKey;
-  if (!mod) return;
-
-  const key = event.key.toLowerCase();
-  if (key === "l") {
-    event.preventDefault();
-    addressBar.focus();
-  }
-  if (key === "r") {
-    event.preventDefault();
-    webview.reload();
-  }
-  if (event.key === "ArrowLeft" && webview.canGoBack()) {
-    event.preventDefault();
-    webview.goBack();
-  }
-  if (event.key === "ArrowRight" && webview.canGoForward()) {
-    event.preventDefault();
-    webview.goForward();
+// Keyboard shortcuts
+document.addEventListener("keydown", (event) => {
+  if (event.ctrlKey || event.metaKey) {
+    if (event.key === "r") {
+      event.preventDefault();
+      reloadBtn.click();
+    }
+    if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      backBtn.click();
+    }
+    if (event.key === "ArrowRight") {
+      event.preventDefault();
+      forwardBtn.click();
+    }
+    if (event.key === "l") {
+      event.preventDefault();
+      addressBar.focus();
+    }
   }
 });
 
-webview.addEventListener("dom-ready", () => {
-  navigate(DEFAULT_URL);
-});
+// Initial setup
+updateSecurityIcon(DEFAULT_URL);
+addressBar.value = DEFAULT_URL;
+updateNavButtons();
+renderAccounts();
 
-updateAddress(DEFAULT_URL);
-updateButtons();
+// Load Google on startup
+navigateTo(DEFAULT_URL, false);
+
+console.log("Browser ready");
