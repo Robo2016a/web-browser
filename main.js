@@ -1,67 +1,48 @@
-const { app, BrowserWindow, Menu, session } = require("electron");
+const { app, BrowserWindow } = require("electron");
 const path = require("path");
-const isDev = require("electron-is-dev");
 
 let mainWindow;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 1600,
-    height: 1000,
+    width: 1400,
+    height: 900,
     minWidth: 900,
     minHeight: 600,
+    backgroundColor: "#202124",
     show: false,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       contextIsolation: true,
-      enableRemoteModule: false,
       nodeIntegration: false,
       sandbox: true,
+      webviewTag: true,
       webSecurity: true,
     },
   });
 
-  mainWindow.loadFile("index.html");
-
-  mainWindow.webContents.once("ready-to-show", () => {
-    mainWindow.show();
-  });
-
-  // Disable menu
+  mainWindow.loadFile(path.join(__dirname, "index.html"));
   mainWindow.setMenuBarVisibility(false);
 
+  mainWindow.once("ready-to-show", () => mainWindow.show());
   mainWindow.on("closed", () => {
     mainWindow = null;
   });
 }
 
-app.on("ready", () => {
-  // Allow popups for Google login
-  createWindow();
-});
+app.whenReady().then(createWindow);
 
 app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    app.quit();
-  }
+  if (process.platform !== "darwin") app.quit();
 });
 
 app.on("activate", () => {
-  if (mainWindow === null) {
-    createWindow();
-  }
+  if (BrowserWindow.getAllWindows().length === 0) createWindow();
 });
 
-app.on("web-contents-created", (event, contents) => {
-  // Block new windows from opening outside the app
+app.on("web-contents-created", (_event, contents) => {
   contents.setWindowOpenHandler(({ url }) => {
-    if (
-      url.startsWith("https://") ||
-      url.startsWith("http://") ||
-      url.startsWith("about:")
-    ) {
-      return { action: "allow" };
-    }
+    if (/^https?:\/\//i.test(url)) return { action: "allow" };
     return { action: "deny" };
   });
 });

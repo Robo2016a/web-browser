@@ -1,73 +1,24 @@
-# Browser
+# Local browser
 
-A Chrome-like browser built with Electron featuring:
+This is a **local Electron app**, not a GitHub Pages app. The web page area uses Electron's Chromium-backed `<webview>`, so sites render as complete pages instead of being put in a restricted iframe.
 
-- Clean, intuitive Chrome-inspired toolbar
-- Full-page rendering with no missing content
-- Back, forward, and reload navigation
-- Address bar with URL/search support
-- HTTPS/HTTP security indicator
-- Google account management and switching
-- Add multiple Google accounts
-- Switch between accounts with one click
-- Keyboard shortcuts (Ctrl+R, Ctrl+L, Ctrl+Arrow Keys)
-- Responsive design
+## Start it
 
-## Installation
-
-1. Install Node.js LTS from https://nodejs.org
-
-2. Clone and navigate to the repository:
-   ```bash
-   git clone https://github.com/Robo2016a/web-browser.git
-   cd web-browser
-   ```
-
-3. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-## Running
+From the repository folder—the folder containing `package.json`—run:
 
 ```bash
+npm install
 npm start
 ```
 
-The browser launches at Google.com by default.
+To restart it, close the window, press `Ctrl+C` in the terminal, then run `npm start` again.
 
-## Features
+## Google accounts
 
-### Navigation
-- Back/Forward buttons
-- Reload page
-- Address bar (URL or search)
-- Keyboard shortcuts:
-  - `Ctrl+R` / `Cmd+R`: Reload
-  - `Ctrl+L` / `Cmd+L`: Focus address bar
-  - `Ctrl+Left` / `Cmd+Left`: Back
-  - `Ctrl+Right` / `Cmd+Right`: Forward
+The app always opens `https://www.google.com/`. Click the blue account dot and choose **Open Google account chooser** to sign in or switch Google accounts. The persistent `persist:browser` Electron session keeps cookies and sign-ins between launches on this computer.
 
-### Google Accounts
-- Click the account icon in the toolbar
-- Switch between existing accounts instantly
-- Add new Google accounts
-- Accounts persist across sessions
+The account panel does not ask for or store passwords. Google handles authentication inside its own page.
 
-## Troubleshooting
+## Why this fixes the missing page
 
-**"Cannot find module" error:**
-```bash
-rm -rf node_modules
-npm install
-```
-
-**Blank window:**
-- Make sure `index.html` is in the project root
-- Check that all files are in the correct location
-- Try deleting `node_modules` and reinstalling
-
-**Pages not loading:**
-- Check your internet connection
-- Try a different website
-- Clear browser cache or try an incognito window
+The previous implementation used an iframe. Many sites restrict iframe embedding, and an iframe is not a browser tab. This version uses Electron's `webview` with its own Chromium renderer and navigation history.

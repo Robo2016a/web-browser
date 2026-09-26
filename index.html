@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -7,81 +7,37 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="browser-container">
-      <!-- Chrome-style toolbar -->
-      <div class="toolbar">
-        <div class="toolbar-left">
-          <button class="nav-btn" id="backBtn" title="Back (Ctrl+Left)">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M15 18l-6-6 6-6"></path>
-            </svg>
-          </button>
-          <button class="nav-btn" id="forwardBtn" title="Forward (Ctrl+Right)">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M9 18l6-6-6-6"></path>
-            </svg>
-          </button>
-          <button class="nav-btn" id="reloadBtn" title="Reload (Ctrl+R)">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="23 4 23 10 17 10"></polyline>
-              <polyline points="1 20 1 14 7 14"></polyline>
-              <path d="M3.51 9a9 9 0 0114.85-3.36M20.49 15a9 9 0 01-14.85 3.36"></path>
-            </svg>
-          </button>
+    <main class="browser-container">
+      <header class="toolbar">
+        <div class="nav-buttons">
+          <button class="icon-button" id="backBtn" title="Back" aria-label="Back">‹</button>
+          <button class="icon-button" id="forwardBtn" title="Forward" aria-label="Forward">›</button>
+          <button class="icon-button" id="reloadBtn" title="Reload" aria-label="Reload">↻</button>
         </div>
 
-        <div class="address-bar-wrapper">
-          <div class="address-bar-container">
-            <span class="security-icon" id="securityIcon">🔒</span>
-            <input
-              id="addressBar"
-              class="address-bar"
-              type="text"
-              placeholder="Search Google or type a URL"
-              spellcheck="false"
-            />
-          </div>
+        <div class="address-shell">
+          <span id="securityIcon" class="security-icon">🔒</span>
+          <input id="addressBar" autocomplete="off" spellcheck="false" placeholder="Search Google or type a URL" />
+          <button id="clearBtn" class="clear-button" aria-label="Clear address" hidden>×</button>
         </div>
 
-        <div class="toolbar-right">
-          <button class="account-btn" id="accountBtn" title="Google Accounts">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path>
-            </svg>
-          </button>
-          <button class="menu-btn" id="menuBtn" title="Menu">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"></path>
-            </svg>
-          </button>
+        <div class="toolbar-actions">
+          <button id="accountBtn" class="account-button" title="Google accounts" aria-label="Google accounts">●</button>
+          <button id="menuBtn" class="icon-button" title="Menu" aria-label="Menu">⋮</button>
         </div>
-      </div>
+      </header>
 
-      <!-- Account dropdown panel -->
-      <div id="accountPanel" class="account-panel hidden">
-        <div class="account-panel-header">
-          <h3>Google Accounts</h3>
-          <button class="close-btn" id="closeAccountPanel">✕</button>
-        </div>
-        <div class="account-list" id="accountList">
-          <div class="account-item add-account" id="addAccountBtn">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="#1f2937">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"></path>
-            </svg>
-            <span>Add Account</span>
-          </div>
-        </div>
-      </div>
+      <section class="account-panel" id="accountPanel" hidden>
+        <div class="panel-title">Google accounts</div>
+        <p class="panel-note">Sign in or switch accounts on Google itself. Account sessions are kept by this local Electron profile.</p>
+        <button id="openAccountsBtn" class="panel-action">Open Google account chooser</button>
+      </section>
 
-      <!-- Loading bar -->
       <div id="loadingBar" class="loading-bar"></div>
-
-      <!-- Main browser view -->
-      <div class="browser-view-container">
-        <iframe id="browserView" title="Web page content"></iframe>
-      </div>
-    </div>
-
+      <section class="page-container">
+        <webview id="browserView" src="https://www.google.com/" partition="persist:browser" allowpopups></webview>
+      </section>
+    </main>
     <script src="renderer.js"></script>
   </body>
 </html>

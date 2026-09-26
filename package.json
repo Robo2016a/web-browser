@@ -1,14 +1,8 @@
 {
-  "name": "browser",
+  "name": "local-browser",
   "version": "1.0.0",
-  "description": "Chrome-like browser with Google account switching",
+  "description": "A local Electron browser with full Chromium page rendering.",
   "main": "main.js",
-  "scripts": {
-    "start": "electron .",
-    "dev": "electron . --remote-debugging-port=9222"
-  },
-  "devDependencies": {
-    "electron": "^latest",
-    "electron-is-dev": "^2.0.0"
-  }
+  "scripts": { "start": "electron ." },
+  "devDependencies": { "electron": "^30.0.0" }
 }

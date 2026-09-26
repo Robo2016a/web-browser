@@ -1,5 +1,5 @@
 const { contextBridge } = require("electron");
 
-contextBridge.exposeInMainWorld("electron", {
-  version: process.versions,
+contextBridge.exposeInMainWorld("electronAPI", {
+  platform: process.platform,
 });
