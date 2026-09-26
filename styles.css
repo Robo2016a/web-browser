@@ -1,37 +1,243 @@
-* { box-sizing: border-box; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-:root {
-  color-scheme: light;
-  --toolbar: #202124;
-  --toolbar-2: #292a2d;
-  --text: #202124;
-  --muted: #5f6368;
-  --line: #dadce0;
-  --blue: #1a73e8;
+html, body {
+  width: 100%;
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  background: #fff;
+  color: #202124;
+  overflow: hidden;
 }
 
-html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; font-family: Arial, sans-serif; background: #fff; color: var(--text); }
-.browser-container { width: 100%; height: 100%; display: flex; flex-direction: column; background: #fff; }
-.toolbar { height: 64px; flex: 0 0 64px; display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: linear-gradient(#292a2d, var(--toolbar)); }
-.nav-buttons, .toolbar-actions { display: flex; align-items: center; gap: 4px; }
-.icon-button, .account-button { width: 38px; height: 38px; border: 0; border-radius: 50%; background: transparent; color: #e8eaed; cursor: pointer; font-size: 27px; line-height: 1; }
-.icon-button:hover, .account-button:hover { background: rgba(255,255,255,.12); }
-.icon-button:disabled { color: #777; cursor: default; }
-.account-button { color: #8ab4f8; font-size: 30px; }
-.address-shell { height: 42px; min-width: 0; flex: 1; display: flex; align-items: center; gap: 8px; padding: 0 12px; border-radius: 23px; background: #3c4043; border: 1px solid transparent; }
-.address-shell:focus-within { background: #fff; border-color: #8ab4f8; }
-.security-icon { font-size: 14px; }
-#addressBar { min-width: 0; flex: 1; border: 0; outline: 0; background: transparent; color: #fff; font-size: 15px; }
-.address-shell:focus-within #addressBar { color: var(--text); }
-#addressBar::selection { background: #8ab4f8; }
-.clear-button { border: 0; background: transparent; color: #9aa0a6; font-size: 22px; cursor: pointer; }
-.loading-bar { position: absolute; z-index: 10; top: 64px; left: 0; height: 3px; width: 0; opacity: 0; background: var(--blue); transition: width .2s, opacity .2s; }
-.loading-bar.active { opacity: 1; width: 70%; }
-.page-container { position: relative; flex: 1; min-height: 0; background: #fff; }
-webview { display: inline-flex; width: 100%; height: 100%; border: 0; }
-.account-panel { position: absolute; z-index: 20; top: 58px; right: 56px; width: 330px; padding: 18px; border: 1px solid var(--line); border-radius: 14px; background: #fff; box-shadow: 0 6px 24px rgba(0,0,0,.22); }
-.account-panel[hidden] { display: none; }
-.panel-title { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
-.panel-note { color: var(--muted); line-height: 1.45; font-size: 13px; margin: 0 0 16px; }
-.panel-action { width: 100%; border: 0; border-radius: 20px; padding: 11px 14px; background: var(--blue); color: #fff; cursor: pointer; font-weight: 600; }
-@media (max-width: 650px) { .toolbar { gap: 4px; padding: 8px; } .nav-buttons { gap: 0; } .icon-button, .account-button { width: 34px; height: 34px; } }
+.browser-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+}
+
+.toolbar {
+  height: 56px;
+  flex: 0 0 56px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  background: linear-gradient(to bottom, #2d2e31, #202124);
+  border-bottom: 1px solid #000;
+  z-index: 100;
+}
+
+.nav-buttons,
+.toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.icon-button,
+.account-button {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: #e8eaed;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+
+.icon-button:hover,
+.account-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.icon-button:disabled {
+  color: #5f6368;
+  cursor: not-allowed;
+}
+
+.account-button {
+  color: #8ab4f8;
+  font-size: 20px;
+}
+
+.address-shell {
+  flex: 1;
+  min-width: 200px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  border-radius: 20px;
+  background: #3c4043;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.address-shell:focus-within {
+  background: #fff;
+  border-color: #8ab4f8;
+  box-shadow: 0 1px 6px rgba(32, 33, 36, 0.08);
+}
+
+.security-icon {
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+#addressBar {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #fff;
+  font-size: 14px;
+}
+
+.address-shell:focus-within #addressBar {
+  color: #202124;
+}
+
+#addressBar::placeholder {
+  color: #9aa0a6;
+}
+
+#addressBar::selection {
+  background: #8ab4f8;
+  color: #fff;
+}
+
+.clear-button {
+  border: none;
+  background: transparent;
+  color: #9aa0a6;
+  font-size: 18px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: color 0.2s ease;
+}
+
+.clear-button:hover {
+  color: #e8eaed;
+}
+
+.loading-bar {
+  position: absolute;
+  top: 56px;
+  left: 0;
+  height: 3px;
+  width: 0;
+  background: linear-gradient(90deg, #4285f4, #34a853, #fbbc04, #ea4335);
+  opacity: 0;
+  transition: width 0.3s ease, opacity 0.3s ease;
+  z-index: 99;
+}
+
+.loading-bar.active {
+  opacity: 1;
+  width: 70%;
+}
+
+.page-container {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  background: #fff;
+  overflow: hidden;
+}
+
+webview {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+.account-panel {
+  position: absolute;
+  top: 56px;
+  right: 56px;
+  width: 340px;
+  max-height: 500px;
+  overflow-y: auto;
+  padding: 16px;
+  border: 1px solid #dadce0;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+}
+
+.account-panel[hidden] {
+  display: none;
+}
+
+.panel-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #202124;
+}
+
+.panel-note {
+  color: #5f6368;
+  line-height: 1.5;
+  font-size: 13px;
+  margin: 0 0 16px 0;
+}
+
+.panel-action {
+  width: 100%;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 16px;
+  background: #1a73e8;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s ease;
+}
+
+.panel-action:hover {
+  background: #1765cc;
+}
+
+@media (max-width: 900px) {
+  .toolbar {
+    gap: 8px;
+    padding: 6px 8px;
+    height: 48px;
+    flex: 0 0 48px;
+  }
+
+  .loading-bar {
+    top: 48px;
+  }
+
+  .icon-button,
+  .account-button {
+    width: 36px;
+    height: 36px;
+  }
+
+  .address-shell {
+    height: 36px;
+  }
+}
+
+@media (max-width: 600px) {
+  .account-panel {
+    width: calc(100vw - 32px);
+    right: 16px;
+  }
+}
